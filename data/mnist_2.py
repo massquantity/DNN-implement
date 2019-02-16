@@ -72,6 +72,15 @@ def _one_hot(Y):
         ys.append(single_label)
     return ys
 
+def one_hot(y_, n_classes=n_classes):  ####
+    # Function to encode neural one-hot output labels from number indexes
+    # e.g.:
+    # one_hot(y_=[[5], [0], [3]], n_classes=6):
+    #     return [[0, 0, 0, 0, 0, 1], [1, 0, 0, 0, 0, 0], [0, 0, 0, 1, 0, 0]]
+
+    y_ = y_.reshape(len(y_))
+    return np.eye(n_classes)[np.array(y_, dtype=np.int32)]  # Returns FLOATS
+
 
 def load_data_2(normalize=True, flatten=True, one_hot=True, batch=True):
     if not os.path.exists(save_file):
