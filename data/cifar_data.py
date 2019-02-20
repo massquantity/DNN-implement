@@ -16,7 +16,7 @@ dataset_dir = pardir + "/cifar_raw_data/"
 def _download():
 	print("Downloading...")
 	if not os.path.exists("cifar-10-python.tar.gz") and \
-	   not os.path.exists("cifar_raw_data/cifar-10-python.tar.gz"):
+		not os.path.exists("cifar_raw_data/cifar-10-python.tar.gz"):
 		subprocess.call(
 			'wget "https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz"', 
 			shell=True)
@@ -34,7 +34,7 @@ def _download():
 def _extract_data():
 	# extract data
 	file_names = ["cifar-10-batches-py/data_batch_%d" % i for i in range(1, 6)] + \
-             	 ["cifar-10-batches-py/test_batch"]
+ 					["cifar-10-batches-py/test_batch"]
 	with tarfile.open("cifar-10-python.tar.gz") as tar:
 		for file in file_names:
 			tar.extract(file, path=os.path.abspath('.'))
@@ -50,17 +50,17 @@ def init_cifar10():
 
 
 class standardscale:
-    def __init__(self):
-        self.mean = None
-        self.std = None
+	def __init__(self):
+		self.mean = None
+		self.std = None
         
-    def fit_transform(self, X):
-        self.mean = np.mean(X, axis=0)   # .astype(np.float32)
-        self.std = np.std(X, axis=0)   # .astype(np.float32)
-        return (X - self.mean) / self.std
+	def fit_transform(self, X):
+		self.mean = np.mean(X, axis=0)   # .astype(np.float32)
+		self.std = np.std(X, axis=0)   # .astype(np.float32)
+		return (X - self.mean) / self.std
         
-    def transform(self, X):
-        return (X - self.mean) / self.std
+	def transform(self, X):
+		return (X - self.mean) / self.std
 
 
 def _one_hot(labels):
@@ -73,16 +73,16 @@ def load_data(normalize=False, standard=True, one_hot=True):
 
 	data, labels = [], []
 	for i in range(1, 6):
-	    with open('cifar10/data_batch_%d' % i, 'rb') as f:
-	        whole = pickle.load(f, encoding='bytes')
-	        data.extend(whole[b'data'])
-	        labels.extend(whole[b'labels'])
+		with open('cifar10/data_batch_%d' % i, 'rb') as f:
+			whole = pickle.load(f, encoding='bytes')
+			data.extend(whole[b'data'])
+			labels.extend(whole[b'labels'])
 
 	test_data, test_labels = [], []
 	with open('cifar10/test_batch', 'rb') as f:
-	    whole = pickle.load(f, encoding='bytes')
-	    test_data = whole[b'data']
-	    test_labels = np.array(whole[b'labels'])
+		whole = pickle.load(f, encoding='bytes')
+		test_data = whole[b'data']
+		test_labels = np.array(whole[b'labels'])
 
 	X_train = np.array(data).astype(np.float32)
 	X_test = np.array(test_data).astype(np.float32)
