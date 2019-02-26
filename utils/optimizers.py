@@ -35,7 +35,7 @@ class Momentum:
             weights[i] = w + vw
 
         for i, (b, vb) in enumerate(zip(biases, self.velocity['b'])):
-            biases[i] = b + vb
+            biases[i] = b + vb 
         '''
 
         for i, (w, vw, gw) in enumerate(zip(weights, self.velocity['w'], grad_w)):
