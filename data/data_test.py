@@ -309,33 +309,39 @@ def train_DNN_minibatch(X_train, y_train, num_epochs, optimizer, batch_size, net
         for i in range(0, len(X_train), batch_size):
             X_batch = X_train[i: i + batch_size]
             y_batch = y_train[i: i + batch_size]
-        #    gradient_w = [np.zeros(w.shape) for w in network.weights]
-        #    gradient_b = [np.zeros(b.shape) for b in network.biases]
             grad_w, grad_b = network.backprop(X_batch, y_batch)
-        #    gradient_w = [gw + aw for gw, aw in zip(gradient_w, add_w)]
-        #    gradient_b = [gb + ab for gb, ab in zip(gradient_b, add_b)]
-
-
-            optimizer.update(network.weights, network.biases, grad_w, grad_b)  #   gradient_w, gradient_b  add_w, add_b
-
-        #      network.weights = [weight - learning_rate * gw / batch_size for weight, gw in zip(network.weights, gradient_w)]
-        #       network.biases = [bias - learning_rate * gb / batch_size for bias, gb in zip(network.biases, gradient_b)]
+            optimizer.update(network.weights, network.biases, grad_w, grad_b)
 
         if X_test is not None:
-            print("Epoch {}, training_accuracy: {:>6},  validation accuracy: {:>6},  epoch time: {:.2f}s".format(
-                epoch + 1,
-                evaluate(X_train, y_train, network),
-                evaluate(X_test, y_test, network),
-                time.time() - start))
+            train_loss, train_accuracy = evaluate_batch(X_train, y_train, network)
+            test_loss, test_accuracy = evaluate_batch(X_test, y_test, network)
+            print("Epoch {}, training loss: {:.4f}, training accuracy: {:>6},  "
+                  "validation loss: {:.4f}, validation accuracy: {:>6},  "
+                  "epoch time: {:.2f}s".format(
+                   epoch + 1,
+                   train_loss,
+                   train_accuracy,
+                   test_loss,
+                   test_accuracy,
+                   time.time() - start))
         else:
-            print("Epoch {0}, training_accuracy: {1}".
-                  format(epoch + 1, evaluate(X_train, y_train, network)))
+            print("Epoch {0}, training_accuracy: {1}".format(epoch + 1, evaluate(X_train, y_train, network)))
 
 
 def evaluate(X_val, y_val, network):
     y_pred = [np.argmax(network.predict(x)) for x in X_val]
     return np.mean([int(y_p == np.argmax(y)) for y_p, y in zip(y_pred, y_val)])
 
+def evaluate_batch(X, y, network):
+    y_pred = network.softmax_batch(network.predict(X))
+  #  y_prob = y_pred[np.arange(len(y)), y.argmax(axis=1)]
+    y_prob = np.take_along_axis(y_pred, np.expand_dims(y.argmax(axis=1), axis=1), axis=1)
+    loss = - np.sum(np.log(y_prob)) / len(y)
+
+    y_true = np.argmax(y, axis=1)
+    y_pred_index = np.argmax(y_pred, axis=1)
+    accuracy = np.mean(y_true == y_pred_index)
+    return loss, accuracy
 
 
 if __name__ == "__main__":
@@ -349,9 +355,9 @@ if __name__ == "__main__":
 
     print("------------------", "NesterovMomentum", "----------------------")
     (X_train, y_train), (X_test, y_test) = load_data(normalize=False, standard=True)  # standardscale
-    dnn = Network_mini_batch(sizes=[3072, 50, 10], activation="relu")
-    optimizer = NesterovMomentum(lr=1e-3, momentum=0.9, batch_size=32)
-    train_DNN_minibatch(X_train, y_train, 100, optimizer, 32, dnn, X_test, y_test)
+    dnn = Network_mini_batch(sizes=[3072, 500, 10], activation="relu")
+    optimizer = NesterovMomentum(lr=1e-3, momentum=0.9, batch_size=128)
+    train_DNN_minibatch(X_train, y_train, 100, optimizer, 128, dnn, X_test, y_test)
     print()
 
 
