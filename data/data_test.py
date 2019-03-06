@@ -2,20 +2,21 @@ import warnings
 warnings.filterwarnings("ignore")
 import os
 import sys
+sys.path.append(os.pardir)
 import time
 import numpy as np
 import pdb
-sys.path.append(os.pardir)
 from cifar_data import load_data
 from evaluate.evaluate import evaluate_batch
 from utils.optimizers import *
 from utils.activations import *
 from train import data_generator
+from model.Base import NetworkBase
 # from .cifar_data import load_data
 # from .mnist_1 import load_data
 
 
-class Network:
+class Network(NetworkBase):
     def __init__(self, sizes=[100, 100], activation="relu", dropout_rate=0.0):
         """
         :param sizes: list of layers
@@ -79,7 +80,7 @@ class Network:
 
 
 
-class Network_mini_batch(Network):
+class Network_mini_batch(NetworkBase):
     def __init__(self, sizes=[100, 100], activation="relu"):
         """
         :param sizes:
