@@ -1,8 +1,4 @@
-import numpy as np
-import os
-import sys
-sys.path.append(os.pardir)
-from utils.activations import *
+from ..utils.activations import *
 
 def evaluate(X_val, y_val, network):
     y_pred = [np.argmax(network.predict(x)) for x in X_val]
