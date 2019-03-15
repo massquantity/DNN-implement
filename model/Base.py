@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from utils.activations import *
+from ..utils.activations import *
 
 class NetworkBase(metaclass=ABCMeta):
     def __init__(self, sizes, activation):

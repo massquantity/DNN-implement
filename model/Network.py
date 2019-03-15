@@ -1,9 +1,8 @@
-import random
-import numpy as np
-from nndl.data.mnist_1 import load_data
+from .Base import NetworkBase
+from ..utils.activations import *
 
 
-class Network:
+class Network(NetworkBase):
     def __init__(self, sizes=[100, 100], activation="relu", dropout_rate=0.0):
         """
         :param sizes: list of layers
@@ -11,18 +10,18 @@ class Network:
         """
         self.sizes = sizes
         self.num_layers = len(sizes)
-        self.weights = [np.random.randn(back_layer, forward_layer) * np.sqrt(2.0 / forward_layer) \
+        self.weights = [np.random.randn(back_layer, forward_layer) * np.sqrt(2.0 / forward_layer)
                         for forward_layer, back_layer in zip(sizes[:-1], sizes[1:])]
         self.biases = [np.random.randn(back_layer, 1) for back_layer in sizes[1:]]
         self.dropout_rate = dropout_rate
 
         # TODO  activation_functions = {'sigmoid': sigmoid, 'relu': relu} tanh
         if activation.lower() == "sigmoid":
-            self.activation = Network.sigmoid
-            self.activation_derivative = Network.sigmoid_derivative
+            self.activation = sigmoid
+            self.activation_derivative = sigmoid_derivative
         elif activation.lower() == "relu":
-            self.activation = Network.relu
-            self.activation_derivative = Network.relu_derivative
+            self.activation = relu
+            self.activation_derivative = relu_derivative
 
     def predict(self, a):
         for w, b in zip(self.weights[:-1], self.biases[:-1]):
@@ -44,17 +43,17 @@ class Network:
 
             self.mask = np.random.rand(*z.shape) > self.dropout_rate
             z *= self.mask
-        #    z /= (1 - self.dropout_rate)
+            #    z /= (1 - self.dropout_rate)
 
             a = self.activation(z)
             z_hold.append(z)
             a_hold.append(a)
         final_layer = np.dot(self.weights[-1], a) + self.biases[-1]
         z_hold.append(final_layer)
-        a_hold.append(Network.softmax(final_layer))
+        a_hold.append(softmax(final_layer))
 
         # backward pass#
-        delta = Network.softmax_derivative(a_hold[-1], y)
+        delta = softmax_derivative(a_hold[-1], y)
         gradient_w[-1] = np.dot(delta, a_hold[-2].T)
         gradient_b[-1] = delta
 
@@ -66,46 +65,15 @@ class Network:
         return gradient_w, gradient_b
 
 
-    @staticmethod
-    def sigmoid(z):
-        return 1.0 / (1.0 + np.exp(-z))
 
-    @staticmethod
-    def sigmoid_derivative(z):
-        return Network.sigmoid(z) * (1 - Network.sigmoid(z))
-
-    @staticmethod
-    def relu(z):
-        return np.maximum(z, 0)
-
-    @staticmethod
-    def relu_derivative(z):
-        mask = (z <= 0)
-        dout = np.ones(z.shape)
-        dout[mask] = 0.0
-        return dout
-
-    @staticmethod
-    def softmax(z):
-        z = z - np.max(z)
-        return np.exp(z) / np.sum(np.exp(z))
-
-    @staticmethod
-    def softmax_batch(z):
-        z = z.T
-        z = z - np.max(z, axis=0)
-        t = np.exp(z) / np.sum(np.exp(z), axis=0)
-        return t.T
-
-    @staticmethod
-    def softmax_derivative(a, b):
-        return a - b
-
-
-class Network_mini_batch(Network):
+class Network_mini_batch(NetworkBase):
     def __init__(self, sizes=[100, 100], activation="relu"):
+        """
+        :param sizes:
+        :param activation:
+        """
         super().__init__(sizes, activation)
-        self.weights = [np.random.randn(forward_layer, back_layer) \
+        self.weights = [np.random.randn(forward_layer, back_layer) * np.sqrt(2.0 / forward_layer) \
                         for forward_layer, back_layer in zip(sizes[:-1], sizes[1:])]
         self.biases = [np.random.randn(layer) for layer in sizes[1:]]
 
@@ -129,9 +97,9 @@ class Network_mini_batch(Network):
             a_hold.append(a)
         final_layer = np.dot(a, self.weights[-1]) + self.biases[-1]
         z_hold.append(final_layer)
-        a_hold.append(self.softmax_batch(final_layer))
-        
-        delta = self.softmax_derivative(a_hold[-1], y)
+        a_hold.append(softmax_batch(final_layer))
+
+        delta = softmax_derivative(a_hold[-1], y)
         gradient_w[-1] = np.dot(a_hold[-2].T, delta)
         gradient_b[-1] = np.sum(delta, axis=0)
 
