@@ -6,25 +6,24 @@ import subprocess
 import urllib.request
 import numpy as np
 
-
 pardir = os.path.dirname(os.path.abspath(__file__))
-if not os.path.exists(pardir + "/cifar_raw_data"):
-    os.makedirs(pardir + "/cifar_raw_data")
-dataset_dir = pardir + "/cifar_raw_data/"
+if not os.path.exists(pardir + "cifar_raw_data"):
+    os.makedirs(pardir + "cifar_raw_data")
+dataset_dir = pardir + "cifar_raw_data/"
 
 
 def _download():
     print("Downloading...")
     if not os.path.exists("cifar-10-python.tar.gz") and \
-        not os.path.exists("cifar_raw_data/cifar-10-python.tar.gz"):
+            not os.path.exists("cifar_raw_data/cifar-10-python.tar.gz"):
         subprocess.call(
             'wget "https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz"',
-			shell=True)
+            shell=True)
 
-    #	file_path = dataset_dir + "cifar10.tar.gz"
-    #	urllib.request.urlretrieve(
-    #		"https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz",
-    #		file_path)
+        #	file_path = dataset_dir + "cifar10.tar.gz"
+        #	urllib.request.urlretrieve(
+        #		"https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz",
+        #		file_path)
         print("Download Done ! \n")
 
     else:
@@ -34,7 +33,7 @@ def _download():
 def _extract_data():
     # extract data
     file_names = ["cifar-10-batches-py/data_batch_%d" % i for i in range(1, 6)] + \
- 					["cifar-10-batches-py/test_batch"]
+                 ["cifar-10-batches-py/test_batch"]
     with tarfile.open("cifar-10-python.tar.gz") as tar:
         for file in file_names:
             tar.extract(file, path=os.path.abspath('.'))
@@ -53,12 +52,12 @@ class standardscale:
     def __init__(self):
         self.mean = None
         self.std = None
-        
+
     def fit_transform(self, X):
-        self.mean = np.mean(X, axis=0)   # .astype(np.float32)
-        self.std = np.std(X, axis=0)   # .astype(np.float32)
+        self.mean = np.mean(X, axis=0)  # .astype(np.float32)
+        self.std = np.std(X, axis=0)  # .astype(np.float32)
         return (X - self.mean) / self.std
-        
+
     def transform(self, X):
         return (X - self.mean) / self.std
 
@@ -72,14 +71,15 @@ def load_data(normalize=False, standard=True, one_hot=True):
         init_cifar10()
 
     data, labels = [], []
+    file_path = os.path.join(pardir, "cifar10/")
     for i in range(1, 6):
-        with open('cifar10/data_batch_%d' % i, 'rb') as f:
+        with open(file_path + 'data_batch_%d' % i, 'rb') as f:
             whole = pickle.load(f, encoding='bytes')
             data.extend(whole[b'data'])
             labels.extend(whole[b'labels'])
 
     test_data, test_labels = [], []
-    with open('cifar10/test_batch', 'rb') as f:
+    with open(file_path + 'test_batch', 'rb') as f:
         whole = pickle.load(f, encoding='bytes')
         test_data = whole[b'data']
         test_labels = np.array(whole[b'labels'])
