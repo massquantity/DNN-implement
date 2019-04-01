@@ -1,12 +1,12 @@
-## Feedforward Neural Network Implementation
+# Feedforward Neural Network Implementation
 
-### Overview:
+## Overview:
 
 Feedforward Neural Network implemented in pure python + [numpy](http://www.numpy.org/) . The main features are based on my [Deep Learning Notes ](https://github.com/massquantity/Deep_Learning_NOTES).
 
 
 
-### Features: 
+## Features: 
 
 1. Xavier, He initialization
 2. Dropout
@@ -21,15 +21,15 @@ Feedforward Neural Network implemented in pure python + [numpy](http://www.numpy
 
 
 
-### How to use
+## How to use
 
 
 
-### Benchmarks
+## Benchmarks
 
 
 
-### Learning Curve
+## Learning Curve
 
 
 
