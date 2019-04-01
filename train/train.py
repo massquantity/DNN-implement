@@ -33,6 +33,20 @@ def train_DNN(X_train, y_train, num_epochs, learning_rate, network, X_val=None, 
 
 def train_DNN_minibatch(X_train, y_train, num_epochs, optimizer, batch_size, network,
                         X_test=None, y_test=None, batch_mode="normal", **kwargs):  # balance
+    """
+
+    :param X_train:
+    :param y_train:
+    :param num_epochs:
+    :param optimizer:
+    :param batch_size:
+    :param network:
+    :param X_test:
+    :param y_test:
+    :param batch_mode:
+    :param **kwargs:
+    :return:
+    """
 
     if kwargs.get("early_stopping"):
         print("use early stopping")
