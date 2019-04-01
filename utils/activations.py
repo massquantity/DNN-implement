@@ -28,8 +28,34 @@ class ReLU:
         return dout
 
 
+class LeakyReLU:
+    def __init__(self, alpha=0.3):
+        self.alpha = alpha
+
+        print(alpha)
+    def forward(self, z):
+        return np.where(z >= 0, z, self.alpha * z)
+
+    def derivative(self, z):
+        return np.where(z >= 0, 1, self.alpha)
+
+
+class ELU:
+    def __init__(self, alpha=1.0):
+        self.alpha = alpha
+
+    def forward(self, z):
+        return np.where(z >= 0, z, self.alpha * (np.exp(z) - 1))
+
+    def derivative(self, z):
+        return np.where(z >= 0, 1, self.alpha * np.exp(z))
+
+
 class Softplus:
     def forward(self, z):
+        return np.log(1 + np.exp(z))
+
+    def __call__(self, z):
         return np.log(1 + np.exp(z))
 
     def derivative(self, z):

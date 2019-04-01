@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod
 from ..utils.activations import *
 
 class NetworkBase(metaclass=ABCMeta):
-    def __init__(self, sizes, activation, last_layer):
+    def __init__(self, sizes, activation, last_layer, **kwargs):
         self.sizes = sizes
         self.num_layers = len(sizes)
         if activation.lower() == "sigmoid":
@@ -15,6 +15,16 @@ class NetworkBase(metaclass=ABCMeta):
             self.activation = Tanh()
         elif activation.lower() == "softplus":
             self.activation = Softplus()
+        elif activation.lower() == "leaky_relu":
+            if "alpha" in kwargs:
+                self.activation = LeakyReLU(kwargs.get("alpha"))
+            else:
+                self.activation = LeakyReLU()
+        elif activation.lower() == "elu":
+            if "alpha" in kwargs:
+                self.activation = ELU(kwargs.get("alpha"))
+            else:
+                self.activation = ELU()
 
         if last_layer.lower() == "softmax":
             self.last_layer = Softmax()

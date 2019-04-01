@@ -59,13 +59,13 @@ class Network(NetworkBase):
 
 
 class Network_mini_batch(NetworkBase):
-    def __init__(self, sizes=[100, 100], activation="relu", last_layer="softmax"):
+    def __init__(self, sizes=[100, 100], activation="relu", last_layer="softmax", **kwargs):
         """
         :param sizes:
         :param activation:
         :param last_layer:
         """
-        super(Network_mini_batch, self).__init__(sizes, activation, last_layer)
+        super(Network_mini_batch, self).__init__(sizes, activation, last_layer, **kwargs)
         self.weights = [np.random.randn(forward_layer, back_layer) * np.sqrt(2.0 / forward_layer) \
                         for forward_layer, back_layer in zip(sizes[:-1], sizes[1:])]
         self.biases = [np.random.randn(layer) for layer in sizes[1:]]
