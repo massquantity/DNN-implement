@@ -77,7 +77,7 @@ def train_DNN_minibatch(X_train, y_train, num_epochs, optimizer, batch_size, net
                    train_accuracy,
                    test_loss,
                    test_accuracy,
-                   time.time() - start))
+                   time.time() - start), '\n')
         else:
             train_loss, train_accuracy = evaluate_batch(X_train, y_train, network)
             print("Epoch {0}, training loss: {1}, training accuracy: {2}, "
