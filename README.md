@@ -33,4 +33,4 @@ Feedforward Neural Network implemented in pure python + [numpy](http://www.numpy
 
 
 
-### Lincense
+## Lincense
