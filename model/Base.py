@@ -25,6 +25,8 @@ class NetworkBase(metaclass=ABCMeta):
                 self.activation = ELU(kwargs.get("alpha"))
             else:
                 self.activation = ELU()
+        elif activation.lower() == "selu":
+            self.activation = Selu()
 
         if last_layer.lower() == "softmax":
             self.last_layer = Softmax()

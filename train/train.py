@@ -33,6 +33,25 @@ def train_DNN(X_train, y_train, num_epochs, learning_rate, network, X_val=None, 
 
 def train_DNN_minibatch(X_train, y_train, num_epochs, optimizer, batch_size, network,
                         X_test=None, y_test=None, batch_mode="normal", **kwargs):  # balance
+
+    if kwargs.get("early_stopping"):
+        print("use early stopping")
+        early_stopping = True
+        tolerance = kwargs.get("tolerance", 0.0)
+        patience = kwargs.get("patience", 5)
+        metrics = kwargs.get("metrics", "loss")
+        best_metrics = np.infty
+        restore_best_params = kwargs.get("restore_best_params", False)
+        count = 0
+    else:
+        early_stopping = False
+
+    if kwargs.get("lr_decay"):
+        lr_decay = True
+        lr_decay_rate = kwargs.get("lr_decay_rate", 0.95)
+    else:
+        lr_decay = False
+
     for epoch in range(num_epochs):
         start = time.time()
         if batch_mode == "normal":
@@ -60,11 +79,26 @@ def train_DNN_minibatch(X_train, y_train, num_epochs, optimizer, batch_size, net
                 grad_w, grad_b = network.backprop(X_batch, y_batch)
                 optimizer.update(network.weights, network.biases, grad_w, grad_b)
 
-        if kwargs:
-            param, param_value = list(kwargs.items())[0]
-            if param == "lr_decay_rate":
-                optimizer.lr *= param_value
+        if lr_decay:
+            optimizer.lr *= lr_decay_rate
             print("learning rate: ", optimizer.lr)
+
+        if early_stopping:
+            if metrics == "loss":
+                current_metrics = evaluate_batch(X_test, y_test, network)[0]
+            elif metrics == "accuracy":
+                current_metrics = - evaluate_batch(X_test, y_test, network)[1]
+            if current_metrics < best_metrics - tolerance:
+                best_metrics = current_metrics
+                count = 0
+                model_params = network.params
+            else:
+                count += 1
+
+            if count > patience:
+                print("Early Stopping !!!")
+                break
+
 
         if X_test is not None:
             train_loss, train_accuracy = evaluate_batch(X_train, y_train, network)
@@ -86,6 +120,9 @@ def train_DNN_minibatch(X_train, y_train, num_epochs, optimizer, batch_size, net
                    train_loss,
                    train_accuracy,
                    time.time() - start))
+
+    if restore_best_params:
+        network.weights, network.biases = model_params
 
 
 

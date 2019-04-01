@@ -19,3 +19,5 @@ def vectorized_result(i):
     label = np.zeros((10, 1))
     label[i] = 1.0
     return label
+
+

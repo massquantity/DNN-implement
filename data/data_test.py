@@ -5,7 +5,6 @@ import sys
 sys.path.append(os.pardir)
 import time
 import numpy as np
-import pdb
 from cifar_data import load_data
 from evaluate.evaluate import evaluate_batch
 from utils.optimizers import *
@@ -14,7 +13,6 @@ from train import data_generator
 from model.Base import NetworkBase
 # from .cifar_data import load_data
 # from .mnist_1 import load_data
-
 
 class Network(NetworkBase):
     def __init__(self, sizes=[100, 100], activation="relu", dropout_rate=0.0):
@@ -123,7 +121,6 @@ class Network_mini_batch(NetworkBase):
             gradient_b[-l] = np.sum(delta, axis=0)
 
         return gradient_w, gradient_b
-
 
 def train_DNN_minibatch(X_train, y_train, num_epochs, optimizer, batch_size, network,
                         X_test=None, y_test=None, batch_mode="normal"):  # balance

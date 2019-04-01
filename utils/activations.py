@@ -51,6 +51,18 @@ class ELU:
         return np.where(z >= 0, 1, self.alpha * np.exp(z))
 
 
+class Selu:
+    def __init__(self):
+        self.alpha = 1.6732632423543772848170429916717
+        self.scale = 1.0507009873554804934193349852946
+
+    def forward(self, z):
+        return self.scale * np.where(z >= 0, z, self.alpha * (np.exp(z) - 1))
+
+    def derivative(self, z):
+        return self.scale * np.where(z >= 0, 1, self.alpha * np.exp(z))
+
+
 class Softplus:
     def forward(self, z):
         return np.log(1 + np.exp(z))

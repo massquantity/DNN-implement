@@ -103,3 +103,7 @@ class Network_mini_batch(NetworkBase):
 
         return gradient_w, gradient_b
 
+    @property
+    def params(self):
+        return self.weights, self.biases
+
