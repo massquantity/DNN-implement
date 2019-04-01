@@ -15,14 +15,6 @@ class Network(NetworkBase):
         self.biases = [np.random.randn(back_layer, 1) for back_layer in sizes[1:]]
         self.dropout_rate = dropout_rate
 
-        # TODO  activation_functions = {'sigmoid': sigmoid, 'relu': relu} tanh
-        if activation.lower() == "sigmoid":
-            self.activation = sigmoid
-            self.activation_derivative = sigmoid_derivative
-        elif activation.lower() == "relu":
-            self.activation = relu
-            self.activation_derivative = relu_derivative
-
     def predict(self, a):
         for w, b in zip(self.weights[:-1], self.biases[:-1]):
             a = self.activation(np.dot(w, a) + b)
@@ -45,20 +37,20 @@ class Network(NetworkBase):
             z *= self.mask
             #    z /= (1 - self.dropout_rate)
 
-            a = self.activation(z)
+            a = self.activation.forward(z)
             z_hold.append(z)
             a_hold.append(a)
         final_layer = np.dot(self.weights[-1], a) + self.biases[-1]
         z_hold.append(final_layer)
-        a_hold.append(softmax(final_layer))
+        a_hold.append(self.last_layer.forward(final_layer))
 
         # backward pass#
-        delta = softmax_derivative(a_hold[-1], y)
+        delta = self.last_layer.derivative_with_cross_entropy(a_hold[-1], y)
         gradient_w[-1] = np.dot(delta, a_hold[-2].T)
         gradient_b[-1] = delta
 
         for l in range(2, self.num_layers):
-            delta = np.dot(self.weights[-l + 1].T, delta) * self.activation_derivative(z_hold[-l])
+            delta = np.dot(self.weights[-l + 1].T, delta) * self.activation.derivative(z_hold[-l])
             gradient_w[-l] = np.dot(delta, a_hold[-l - 1].T)
             gradient_b[-l] = delta
 
@@ -67,19 +59,20 @@ class Network(NetworkBase):
 
 
 class Network_mini_batch(NetworkBase):
-    def __init__(self, sizes=[100, 100], activation="relu"):
+    def __init__(self, sizes=[100, 100], activation="relu", last_layer="softmax"):
         """
         :param sizes:
         :param activation:
+        :param last_layer:
         """
-        super().__init__(sizes, activation)
+        super(Network_mini_batch, self).__init__(sizes, activation, last_layer)
         self.weights = [np.random.randn(forward_layer, back_layer) * np.sqrt(2.0 / forward_layer) \
                         for forward_layer, back_layer in zip(sizes[:-1], sizes[1:])]
         self.biases = [np.random.randn(layer) for layer in sizes[1:]]
 
     def predict(self, a):
         for w, b in zip(self.weights[:-1], self.biases[:-1]):
-            a = self.activation(np.dot(a, w) + b)
+            a = self.activation.forward(np.dot(a, w) + b)
         a = np.dot(a, self.weights[-1]) + self.biases[-1]
         return a
 
@@ -92,19 +85,19 @@ class Network_mini_batch(NetworkBase):
         z_hold = []
         for w, b in zip(self.weights[:-1], self.biases[:-1]):
             z = np.dot(a, w) + b  # batch  z = a * w + b
-            a = self.activation(z)
+            a = self.activation.forward(z)
             z_hold.append(z)
             a_hold.append(a)
         final_layer = np.dot(a, self.weights[-1]) + self.biases[-1]
         z_hold.append(final_layer)
-        a_hold.append(softmax_batch(final_layer))
+        a_hold.append(self.last_layer.forward(final_layer))
 
-        delta = softmax_derivative(a_hold[-1], y)
+        delta = self.last_layer.derivative_with_cross_entropy(a_hold[-1], y)
         gradient_w[-1] = np.dot(a_hold[-2].T, delta)
         gradient_b[-1] = np.sum(delta, axis=0)
 
         for l in range(2, self.num_layers):
-            delta = np.dot(delta, self.weights[-l + 1].T) * self.activation_derivative(z_hold[-l])
+            delta = np.dot(delta, self.weights[-l + 1].T) * self.activation.derivative(z_hold[-l])
             gradient_w[-l] = np.dot(a_hold[-l - 1].T, delta)
             gradient_b[-l] = np.sum(delta, axis=0)
 
