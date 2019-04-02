@@ -59,14 +59,19 @@ class Network(NetworkBase):
 
 
 class Network_mini_batch(NetworkBase):
-    def __init__(self, sizes=[100, 100], activation="relu", last_layer="softmax", **kwargs):
+    def __init__(self, sizes=[100, 100], activation="relu", last_layer="softmax", dropout_rate=0.0, **kwargs):
         """
         :param sizes: list of neural network layer sizes
         :param activation: activation functions
         :param last_layer: output layer/function
         """
         super(Network_mini_batch, self).__init__(sizes, activation, last_layer, **kwargs)
-        self.__init_params(mode=kwargs.get("weight_initializer"))
+        self.__init_params(mode=kwargs.get("weight_initializer", "xavier"))
+        if 0.0 <= dropout_rate <= 1.0:
+            self.dropout_rate = dropout_rate
+            self.train = True
+        else:
+            raise ValueError("dropout rate must be in [0.0, 1.0], find value: {}".format(dropout_rate))
 
     def __init_params(self, mode="xavier"):
         if mode == "normal":
@@ -86,6 +91,7 @@ class Network_mini_batch(NetworkBase):
     def predict(self, a):
         for w, b in zip(self.weights[:-1], self.biases[:-1]):
             a = self.activation(np.dot(a, w) + b)
+            a *= (1.0 - self.dropout_rate)
         a = np.dot(a, self.weights[-1]) + self.biases[-1]
         return a
 
@@ -98,6 +104,10 @@ class Network_mini_batch(NetworkBase):
         z_hold = []
         for w, b in zip(self.weights[:-1], self.biases[:-1]):
             z = np.dot(a, w) + b  # batch  z = a * w + b
+            if self.dropout_rate > 0.0:
+                mask = np.random.randn(*z.shape) > self.dropout_rate
+                z *= mask
+            #    z /= (1 - self.dropout_rate)
             a = self.activation(z)
             z_hold.append(z)
             a_hold.append(a)
