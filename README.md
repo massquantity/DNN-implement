@@ -19,7 +19,17 @@ Feedforward Neural Network implemented in pure python + [numpy](http://www.numpy
 
 
 ## How to use
+```python
+from DNN_implementation.data import cifar_data
+from DNN_implementation.model import Network_mini_batch
+from DNN_implementation.train import train_DNN_minibatch
+from DNN_implementation import Momentum
 
+(X_train, y_train), (X_test, y_test) = cifar_data.load_data(normalize=False, standard=True)  # standardscale
+dnn = Network_mini_batch(sizes=[3072, 50, 10], activation="selu", alpha=0.01, dropout_rate=0.5)
+optimizer = Momentum(lr=1e-3, momentum=0.9, batch_size=128)
+train_DNN_minibatch(X_train, y_train, 100, optimizer, 128, dnn, X_test, y_test)
+```
 
 
 ## Benchmarks
@@ -31,3 +41,4 @@ Feedforward Neural Network implemented in pure python + [numpy](http://www.numpy
 
 
 ## Lincense
+MIT
