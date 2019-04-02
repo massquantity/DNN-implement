@@ -37,7 +37,7 @@ class Network(NetworkBase):
             z *= self.mask
             #    z /= (1 - self.dropout_rate)
 
-            a = self.activation.forward(z)
+            a = self.activation(z)
             z_hold.append(z)
             a_hold.append(a)
         final_layer = np.dot(self.weights[-1], a) + self.biases[-1]
@@ -72,7 +72,7 @@ class Network_mini_batch(NetworkBase):
 
     def predict(self, a):
         for w, b in zip(self.weights[:-1], self.biases[:-1]):
-            a = self.activation.forward(np.dot(a, w) + b)
+            a = self.activation(np.dot(a, w) + b)
         a = np.dot(a, self.weights[-1]) + self.biases[-1]
         return a
 
@@ -85,7 +85,7 @@ class Network_mini_batch(NetworkBase):
         z_hold = []
         for w, b in zip(self.weights[:-1], self.biases[:-1]):
             z = np.dot(a, w) + b  # batch  z = a * w + b
-            a = self.activation.forward(z)
+            a = self.activation(z)
             z_hold.append(z)
             a_hold.append(a)
         final_layer = np.dot(a, self.weights[-1]) + self.biases[-1]
