@@ -61,14 +61,27 @@ class Network(NetworkBase):
 class Network_mini_batch(NetworkBase):
     def __init__(self, sizes=[100, 100], activation="relu", last_layer="softmax", **kwargs):
         """
-        :param sizes:
-        :param activation:
-        :param last_layer:
+        :param sizes: list of neural network layer sizes
+        :param activation: activation functions
+        :param last_layer: output layer/function
         """
         super(Network_mini_batch, self).__init__(sizes, activation, last_layer, **kwargs)
-        self.weights = [np.random.randn(forward_layer, back_layer) * np.sqrt(2.0 / forward_layer) \
-                        for forward_layer, back_layer in zip(sizes[:-1], sizes[1:])]
-        self.biases = [np.random.randn(layer) for layer in sizes[1:]]
+        self.__init_params(mode=kwargs.get("weight_initializer"))
+
+    def __init_params(self, mode="xavier"):
+        if mode == "normal":
+            self.weights = [np.random.randn(forward_layer, back_layer) \
+                            for forward_layer, back_layer in zip(self.sizes[:-1], self.sizes[1:])]
+        elif mode == "xavier":
+            self.weights = [np.random.randn(forward_layer, back_layer) * np.sqrt(1.0 / forward_layer) \
+                            for forward_layer, back_layer in zip(self.sizes[:-1], self.sizes[1:])]
+        elif mode == "he":
+            self.weights = [np.random.randn(forward_layer, back_layer) * np.sqrt(2.0 / forward_layer) \
+                            for forward_layer, back_layer in zip(self.sizes[:-1], self.sizes[1:])]
+        else:
+            raise ValueError('Unknown weight initializer mode: {}.'.format(mode))
+
+        self.biases = [np.random.randn(layer) for layer in self.sizes[1:]]
 
     def predict(self, a):
         for w, b in zip(self.weights[:-1], self.biases[:-1]):
