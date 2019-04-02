@@ -141,34 +141,3 @@ def train_DNN_minibatch(X_train, y_train, num_epochs, optimizer, batch_size, net
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
