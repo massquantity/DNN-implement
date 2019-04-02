@@ -10,14 +10,11 @@ Feedforward Neural Network implemented in pure python + [numpy](http://www.numpy
 
 1. Xavier, He initialization
 2. Dropout
-3. SGD & mini-batch SGD
-4. Momentum, Adam optimizer
-5. Stratified batch
+3. Mini-batch / Stratified mini-batch training
+4. Multiple optimize functions: Momentum, NesterovMomentum, RMSprop, Adam etc.
 6. Multiple activation functions: Relu, Leaky relu, Selu, Softplus etc.
-7.  Learning rate decay
+7. Learning rate decay
 8. Early stopping
-
-*adding more* ...
 
 
 
