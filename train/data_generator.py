@@ -1,7 +1,13 @@
 import numpy as np
 
+
 class datainit:
     def __init__(self, X, y, batch_size):
+        """
+        :param X:
+        :param y:
+        :param batch_size:
+        """
         self.batch_size = batch_size
         self.X = X
         self.y = y
