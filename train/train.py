@@ -32,21 +32,27 @@ def train_DNN(X_train, y_train, num_epochs, learning_rate, network, X_val=None, 
 
 
 def train_DNN_minibatch(X_train, y_train, num_epochs, optimizer, batch_size, network,
-                        X_test=None, y_test=None, batch_mode="normal", **kwargs):  # balance
+                        X_test=None, y_test=None, batch_mode="normal", **kwargs):
     """
-
-    :param X_train:
-    :param y_train:
-    :param num_epochs:
-    :param optimizer:
-    :param batch_size:
-    :param network:
-    :param X_test:
-    :param y_test:
-    :param batch_mode:
-    :param **kwargs:
+    :param num_epochs: epoch numbers
+    :param optimizer:  optimize function
+    :param batch_size: batch size
+    :param network:    network model
+    :param batch_mode: batch generation mode, batch_mode means generate batch based on classes
+    :param **kwargs:   miscellaneous arguments
     :return:
     """
+    allowed_kwargs = {'early_stopping',
+                      'tolerance',
+                      'patience',
+                      'metrics',
+                      'restore_best_params',
+                      'lr_decay_rate',
+                      'evaluate'}
+    for kwarg in kwargs:
+        if kwarg not in allowed_kwargs:
+            raise TypeError('Keyword argument not understood:', kwarg)
+
 
     if kwargs.get("early_stopping"):
         print("use early stopping")
@@ -113,29 +119,29 @@ def train_DNN_minibatch(X_train, y_train, num_epochs, optimizer, batch_size, net
                 print("Early Stopping !!!")
                 break
 
+        if kwargs.get('evaluate'):
+            if X_test is not None:
+                train_loss, train_accuracy = evaluate_batch(X_train, y_train, network)
+                test_loss, test_accuracy = evaluate_batch(X_test, y_test, network)
+                print("Epoch {}, training loss: {:.4f}, training accuracy: {:.4f},  \n"
+                      "\t validation loss: {:.4f}, validation accuracy: {:.4f},  "
+                      "epoch time: {:.2f}s ".format(
+                       epoch + 1,
+                       train_loss,
+                       train_accuracy,
+                       test_loss,
+                       test_accuracy,
+                       time.time() - start), '\n')
+            else:
+                train_loss, train_accuracy = evaluate_batch(X_train, y_train, network)
+                print("Epoch {0}, training loss: {1}, training accuracy: {2}, "
+                      "epoch time: {3}s".format(
+                       epoch + 1,
+                       train_loss,
+                       train_accuracy,
+                       time.time() - start))
 
-        if X_test is not None:
-            train_loss, train_accuracy = evaluate_batch(X_train, y_train, network)
-            test_loss, test_accuracy = evaluate_batch(X_test, y_test, network)
-            print("Epoch {}, training loss: {:.4f}, training accuracy: {:.4f},  \n"
-                  "\t validation loss: {:.4f}, validation accuracy: {:.4f},  "
-                  "epoch time: {:.2f}s ".format(
-                   epoch + 1,
-                   train_loss,
-                   train_accuracy,
-                   test_loss,
-                   test_accuracy,
-                   time.time() - start), '\n')
-        else:
-            train_loss, train_accuracy = evaluate_batch(X_train, y_train, network)
-            print("Epoch {0}, training loss: {1}, training accuracy: {2}, "
-                  "epoch time: {3}s".format(
-                   epoch + 1,
-                   train_loss,
-                   train_accuracy,
-                   time.time() - start))
-
-    if restore_best_params:
+    if kwargs.get('restore_best_params'):
         network.weights, network.biases = model_params
 
 
