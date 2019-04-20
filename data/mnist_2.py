@@ -7,9 +7,9 @@ import numpy as np
 
 url_base = 'http://yann.lecun.com/exdb/mnist/'
 key_files = ['train-images-idx3-ubyte.gz',
-            'train-labels-idx1-ubyte.gz',
-            't10k-images-idx3-ubyte.gz',
-            't10k-labels-idx1-ubyte.gz']
+             'train-labels-idx1-ubyte.gz',
+             't10k-images-idx3-ubyte.gz',
+             't10k-labels-idx1-ubyte.gz']
 
 par_dir = os.path.dirname(os.path.abspath(__file__))
 if not os.path.exists(par_dir + "/mnist_download"):
@@ -28,6 +28,7 @@ def _download(files):
     for file in files:
         file_path = dataset_dir + file
         if os.path.exists(file_path):
+            print("data already exists...")
             return
 
         print("Downloading " + file + "...")
