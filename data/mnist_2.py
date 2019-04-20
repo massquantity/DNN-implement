@@ -83,7 +83,7 @@ def one_hot(y_, n_classes=10):  ####
     return np.eye(n_classes)[np.array(y_, dtype=np.int32)]  # Returns FLOATS
 '''
 
-def load_data_2(normalize=True, flatten=True, one_hot=True, batch=True):
+def load_data(normalize=True, flatten=True, one_hot=True, batch=True):
     if not os.path.exists(save_file):
         init_mnist()
 
@@ -116,7 +116,7 @@ def load_data_2(normalize=True, flatten=True, one_hot=True, batch=True):
 
 if __name__ == "__main__":
     init_mnist()
-    load_data_2()
+    load_data()
 
 
 
