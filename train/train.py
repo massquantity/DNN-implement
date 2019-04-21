@@ -72,7 +72,7 @@ def train_DNN_minibatch(X_train, y_train, num_epochs, optimizer, batch_size, net
     else:
         lr_decay = False
 
-    for epoch in range(num_epochs):
+    for epoch in range(1, num_epochs + 1):
         start = time.time()
         if batch_mode == "normal":
             random_mask = np.random.choice(len(X_train), len(X_train), replace=False)
@@ -116,7 +116,7 @@ def train_DNN_minibatch(X_train, y_train, num_epochs, optimizer, batch_size, net
                 count += 1
 
             if count > patience:
-                print("Early Stopping !!!")
+                print("Early Stopping in epoch %d !!!" % epoch)
                 break
 
         if kwargs.get('evaluate'):
@@ -141,7 +141,7 @@ def train_DNN_minibatch(X_train, y_train, num_epochs, optimizer, batch_size, net
                        train_accuracy,
                        time.time() - start))
 
-    if kwargs.get('restore_best_params'):
+    if restore_best_params:
         network.weights, network.biases = model_params
 
 
