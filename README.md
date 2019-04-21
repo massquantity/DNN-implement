@@ -32,7 +32,7 @@ train_DNN_minibatch(X_train, y_train, 100, optimizer, 128, dnn, X_test, y_test)
 ```
 
 
-## Benchmarks
+## Benchmarks (TODO)
 
 | Model                                                        | mnist  | cifar-10 |
 | :----------------------------------------------------------- | :----: | :------: |
