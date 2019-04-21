@@ -15,7 +15,7 @@ class NetworkBase(metaclass=ABCMeta):
             self.activation = Tanh()
         elif activation.lower() == "softplus":
             self.activation = Softplus()
-        elif activation.lower() == "leaky_relu":
+        elif activation.lower() == "leaky_relu" or "leakyrelu":
             if "alpha" in kwargs:
                 self.activation = LeakyReLU(kwargs.get("alpha"))
             else:
