@@ -25,11 +25,11 @@ if __name__ == "__main__":
     print()
     '''
     (X_train, y_train), (X_test, y_test) = mnist_2.load_data()
-    dnn = Network_mini_batch(sizes=[784, 50, 10], activation="selu", alpha=0.01, dropout_rate=0.5,
-                             weight_initializer="xavier")
+    dnn = Network_mini_batch(sizes=[784, 500, 500, 10], activation="relu", alpha=0.1, dropout_rate=0.0,  # dropout
+                             weight_initializer="he")
     optimizer = Momentum(lr=1e-3, momentum=0.9, batch_size=128)
-    train_DNN_minibatch(X_train, y_train, 100, optimizer, 128, dnn, X_test, y_test,
-                        early_stopping=False, tolerance=0.0, metrics="accuracy", evaluate=True)  # lr_decay_rate=0.95
+    train_DNN_minibatch(X_train, y_train, 10000, optimizer, 128, dnn, X_test, y_test,
+                        early_stopping=True, patience=5, metrics="loss", evaluate=True)  # lr_decay_rate=0.95
     print()
 
 
