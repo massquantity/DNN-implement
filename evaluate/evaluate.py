@@ -7,7 +7,7 @@ def evaluate(X_val, y_val, network):
 def evaluate_batch(X, y, network):
     y_pred = Softmax.forward(network.predict(X))
   #  y_prob = y_pred[np.arange(len(y)), y.argmax(axis=1)]
-    y_prob = np.take_along_axis(y_pred, np.expand_dims(y.argmax(axis=1), axis=1), axis=1)
+    y_prob = np.take_along_axis(y_pred, np.expand_dims(y.argmax(axis=1), axis=1), axis=1) + 1e-7
     loss = - np.sum(np.log(y_prob)) / len(y)
 
     y_true = np.argmax(y, axis=1)
