@@ -104,19 +104,23 @@ def train_DNN_minibatch(X_train, y_train, num_epochs, optimizer, batch_size, net
             print("learning rate: ", optimizer.lr)
 
         if early_stopping:
+            metrics_epoch = evaluate_batch(X_test, y_test, network)
             if metrics == "loss":
-                current_metrics = evaluate_batch(X_test, y_test, network)[0]
+                current_metrics = metrics_epoch[0]
             elif metrics == "accuracy":
-                current_metrics = - evaluate_batch(X_test, y_test, network)[1]
+                current_metrics = - metrics_epoch[1]
             if current_metrics < best_metrics - tolerance:
                 best_metrics = current_metrics
+                loss, accuracy = metrics_epoch[0], metrics_epoch[1]
                 count = 0
                 model_params = network.params
             else:
                 count += 1
 
             if count > patience:
-                print("Early Stopping in epoch %d !!!" % epoch)
+
+                print("Early Stopping in epoch %d , best loss is %.4f, best accuracy is %.4f" % (
+                    epoch, loss, accuracy))
                 break
 
         if kwargs.get('evaluate'):
