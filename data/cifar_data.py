@@ -7,9 +7,9 @@ import urllib.request
 import numpy as np
 
 pardir = os.path.dirname(os.path.abspath(__file__))
-if not os.path.exists(pardir + "cifar_raw_data"):
-    os.makedirs(pardir + "cifar_raw_data")
-dataset_dir = pardir + "cifar_raw_data/"
+if not os.path.exists(pardir + "/cifar_raw_data"):
+    os.makedirs(pardir + "/cifar_raw_data")
+dataset_dir = pardir + "/cifar_raw_data/"
 
 
 def _download():
