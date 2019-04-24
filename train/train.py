@@ -47,6 +47,7 @@ def train_DNN_minibatch(X_train, y_train, num_epochs, optimizer, batch_size, net
                       'patience',
                       'metrics',
                       'restore_best_params',
+                      'lr_decay_mode',
                       'lr_decay_rate',
                       'evaluate'}
     for kwarg in kwargs:
@@ -66,9 +67,9 @@ def train_DNN_minibatch(X_train, y_train, num_epochs, optimizer, batch_size, net
     else:
         early_stopping = False
 
-    if kwargs.get("lr_decay"):
-        lr_decay = True
-        lr_decay_rate = kwargs.get("lr_decay_rate", 0.95)
+    if kwargs.get("lr_decay_mode") == "normal" or "exponential":
+        lr_decay = kwargs.get("lr_decay_mode")
+        lr_decay_rate = kwargs.get("lr_decay_rate", 0.99)
     else:
         lr_decay = False
 
@@ -99,8 +100,11 @@ def train_DNN_minibatch(X_train, y_train, num_epochs, optimizer, batch_size, net
                 grad_w, grad_b = network.backprop(X_batch, y_batch)
                 optimizer.update(network.weights, network.biases, grad_w, grad_b)
 
-        if lr_decay:
+        if lr_decay == "normal" and epoch > 10 and optimizer.lr > 5e-5:
             optimizer.lr *= lr_decay_rate
+            print("learning rate: ", optimizer.lr)
+        elif lr_decay == "exponential" and optimizer.lr > 5e-5:
+            optimizer.lr *= lr_decay_rate ** (epoch / 20)
             print("learning rate: ", optimizer.lr)
 
         if early_stopping:
@@ -130,7 +134,7 @@ def train_DNN_minibatch(X_train, y_train, num_epochs, optimizer, batch_size, net
                 print("Epoch {}, training loss: {:.4f}, training accuracy: {:.4f},  \n"
                       "\t validation loss: {:.4f}, validation accuracy: {:.4f},  "
                       "epoch time: {:.2f}s ".format(
-                       epoch + 1,
+                       epoch,
                        train_loss,
                        train_accuracy,
                        test_loss,
@@ -140,7 +144,7 @@ def train_DNN_minibatch(X_train, y_train, num_epochs, optimizer, batch_size, net
                 train_loss, train_accuracy = evaluate_batch(X_train, y_train, network)
                 print("Epoch {0}, training loss: {1}, training accuracy: {2}, "
                       "epoch time: {3}s".format(
-                       epoch + 1,
+                       epoch,
                        train_loss,
                        train_accuracy,
                        time.time() - start))
