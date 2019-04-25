@@ -1,5 +1,6 @@
 from .Base import NetworkBase
 from ..utils.activations import *
+from ..utils.initializers import *
 
 
 class Network(NetworkBase):
@@ -59,13 +60,15 @@ class Network(NetworkBase):
 
 
 class Network_mini_batch(NetworkBase):
-    def __init__(self, sizes=[100, 100], activation="relu", last_layer="softmax", dropout_rate=0.0, **kwargs):
+    def __init__(self, sizes=[100, 100], activation="relu", last_layer="softmax",
+                 seed=42, dropout_rate=0.0, **kwargs):
         """
         :param sizes: list of neural network layer sizes
         :param activation: activation functions
         :param last_layer: output layer/function
         """
         super(Network_mini_batch, self).__init__(sizes, activation, last_layer, **kwargs)
+        self.seed = seed
         self.__init_params(mode=kwargs.get("weight_initializer", "xavier"))
         if 0.0 <= dropout_rate <= 1.0:
             self.dropout_rate = dropout_rate
@@ -74,14 +77,17 @@ class Network_mini_batch(NetworkBase):
             raise ValueError("dropout rate must be in [0.0, 1.0], find value: {}".format(dropout_rate))
 
     def __init_params(self, mode="xavier"):
+        np.random.seed(self.seed)
         if mode == "normal":
-            self.weights = [np.random.randn(forward_layer, back_layer) \
+            self.weights = [truncated_normal(0.0, 0.01, [forward_layer, back_layer])
                             for forward_layer, back_layer in zip(self.sizes[:-1], self.sizes[1:])]
         elif mode == "xavier":
-            self.weights = [np.random.randn(forward_layer, back_layer) * np.sqrt(1.0 / forward_layer) \
+        #    self.weights = [truncated_normal(0.0, 0.01, [forward_layer, back_layer]) * np.sqrt(1.0 / forward_layer)
+        #                    for forward_layer, back_layer in zip(self.sizes[:-1], self.sizes[1:])]
+            self.weights = [variance_scaling(scale=1.0, fan_in=forward_layer, fan_out=back_layer, mode="fan_average")
                             for forward_layer, back_layer in zip(self.sizes[:-1], self.sizes[1:])]
-        elif mode == "he":
-            self.weights = [np.random.randn(forward_layer, back_layer) * np.sqrt(2.0 / forward_layer) \
+        elif mode == "he": # np.random.randn
+            self.weights = [variance_scaling(scale=2.0, fan_in=forward_layer, mode="fan_in")
                             for forward_layer, back_layer in zip(self.sizes[:-1], self.sizes[1:])]
         else:
             raise ValueError('Unknown weight initializer mode: {}.'.format(mode))
