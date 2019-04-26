@@ -34,18 +34,18 @@ def he_init(fan_in, fan_out):
     return truncated_normal(mean=0.0, scale=std, shape=[fan_in, fan_out])
 
 
-def variance_scaling(scale, fan_in, fan_out, mode="fan_in"):
+def variance_scaling(scala, fan_in=None, fan_out=None, mode="fan_in"):
     """
     xavier:  mode = "fan_average", scale = 1.0
     he: mode = "fan_in", scale = 2.0
     he2: mode = "fan_average", scale = 2.0
     """
     if mode == "fan_in":
-        std = np.sqrt(scale / fan_in)
+        std = np.sqrt(scala / fan_in)
     elif mode == "fan_out":
-        std = np.sqrt(scale / fan_out)
+        std = np.sqrt(scala / fan_out)
     elif mode == "fan_average":
-        std = np.sqrt(2.0 * scale / (fan_in + fan_out))
+        std = np.sqrt(2.0 * scala / (fan_in + fan_out))
     return truncated_normal(mean=0.0, scale=std, shape=[fan_in, fan_out])
 
 
