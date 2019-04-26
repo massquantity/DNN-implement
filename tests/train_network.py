@@ -11,9 +11,9 @@ if __name__ == "__main__":
 
     (X_train, y_train), (X_test, y_test) = cifar_data.load_data(normalize=False, standard=True)  # standardscale
     dnn = Network_mini_batch(sizes=[3072, 1000, 500, 200, 10], activation="relu", alpha=0.01, dropout_rate=0.0,
-                             weight_initializer="xavier")
-    optimizer = Sgd(lr=0.01, batch_size=256)
-#    optimizer = Momentum(lr=1e-3, momentum=0.9, batch_size=256)
+                             weight_initializer="he")
+#    optimizer = Sgd(lr=0.1, batch_size=256)
+    optimizer = Momentum(lr=1e-3, momentum=0.9, batch_size=256)
 #    optimizer = Adam(lr=1e-3, batch_size=256)
     start_time = time.time()
     train_DNN_minibatch(X_train, y_train, 150, optimizer, 256, dnn, X_test, y_test,
