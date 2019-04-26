@@ -79,15 +79,15 @@ class Network_mini_batch(NetworkBase):
     def __init_params(self, mode="xavier"):
         np.random.seed(self.seed)
         if mode == "normal":
-            self.weights = [truncated_normal(0.0, 0.01, [forward_layer, back_layer])
+            self.weights = [truncated_normal(mean=0.0, scale=0.01, shape=[forward_layer, back_layer])  # scale = 0.01 / 0.1
                             for forward_layer, back_layer in zip(self.sizes[:-1], self.sizes[1:])]
         elif mode == "xavier":
         #    self.weights = [truncated_normal(0.0, 0.01, [forward_layer, back_layer]) * np.sqrt(1.0 / forward_layer)
         #                    for forward_layer, back_layer in zip(self.sizes[:-1], self.sizes[1:])]
-            self.weights = [variance_scaling(scale=1.0, fan_in=forward_layer, fan_out=back_layer, mode="fan_average")
+            self.weights = [variance_scaling(scala=1.0, fan_in=forward_layer, fan_out=back_layer, mode="fan_average")
                             for forward_layer, back_layer in zip(self.sizes[:-1], self.sizes[1:])]
         elif mode == "he": # np.random.randn
-            self.weights = [variance_scaling(scale=2.0, fan_in=forward_layer, mode="fan_in")
+            self.weights = [variance_scaling(scala=2.0, fan_in=forward_layer, fan_out=back_layer, mode="fan_in")
                             for forward_layer, back_layer in zip(self.sizes[:-1], self.sizes[1:])]
         else:
             raise ValueError('Unknown weight initializer mode: {}.'.format(mode))
