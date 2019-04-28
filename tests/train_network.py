@@ -10,13 +10,13 @@ if __name__ == "__main__":
     print("------------------", "test benchmark", "----------------------")
 
     (X_train, y_train), (X_test, y_test) = cifar_data.load_data(normalize=False, standard=True)  # standardscale
-    dnn = Network_mini_batch(sizes=[3072, 1000, 500, 200, 10], activation="relu", alpha=0.01, dropout_rate=0.0,
+    dnn = Network_mini_batch(sizes=[3072, 1000, 500, 200, 10], activation="relu", dropout_rate=0.3, # alpha=0.1
                              weight_initializer="xavier")
-    optimizer = Sgd(lr=1e-3, batch_size=256)
+    optimizer = Sgd(lr=1.0, batch_size=256)
 #    optimizer = Momentum(lr=1e-3, momentum=0.9, batch_size=256)
-#    optimizer = Adam(lr=1e-3, batch_size=256)
+#    optimizer = Adam(lr=1e-4, batch_size=256)
     start_time = time.time()
-    train_DNN_minibatch(X_train, y_train, 250, optimizer, 256, dnn, X_test, y_test,
+    train_DNN_minibatch(X_train, y_train, 150, optimizer, 256, dnn, X_test, y_test,
                         early_stopping=True, patience=20, metrics="accuracy", evaluate=True,
                         )  # lr_decay_rate=0.99, lr_decay_mode="normal"
     print("training time: {:.2f}".format(time.time() - start_time))
