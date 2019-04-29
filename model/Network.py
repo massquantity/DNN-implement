@@ -95,9 +95,14 @@ class Network_mini_batch(NetworkBase):
         self.biases = [np.random.randn(layer) for layer in self.sizes[1:]]
 
     def predict(self, a):
-        for w, b in zip(self.weights[:-1], self.biases[:-1]):
-            a = self.activation(np.dot(a, w) + b)
+    #    for w, b in zip(self.weights[:-1], self.biases[:-1]):
+    #        a = self.activation(np.dot(a, w) + b)
         #    a *= (1.0 - self.dropout_rate)
+
+        for i, (w, b) in enumerate(zip(self.weights[:-1], self.biases[:-1])):
+            a = self.activation(np.dot(a, w) + b)
+            if i > 0:
+                a *= (1.0 - self.dropout_rate)
         a = np.dot(a, self.weights[-1]) + self.biases[-1]
         return a
 
@@ -111,11 +116,13 @@ class Network_mini_batch(NetworkBase):
         for i, (w, b) in enumerate(zip(self.weights[:-1], self.biases[:-1])):
             z = np.dot(a, w) + b  # batch  z = a * w + b
             if self.dropout_rate > 0.0 and i > 0:
-                mask = np.random.randn(*z.shape) > self.dropout_rate
-             #   print("z1", z.shape)
+                mask = np.random.rand(*z.shape) > self.dropout_rate
+            #    if i == 2:
+            #        print("z1", z.shape)
                 z *= mask
-            #    print("zzz", z[z == 0.0].shape)
-                z /= (1 - self.dropout_rate)
+            #    if i == 2:
+            #        print("zzz", z[z == 0.0].shape)
+            #    z /= (1 - self.dropout_rate)
             a = self.activation(z)
             z_hold.append(z)
             a_hold.append(a)
