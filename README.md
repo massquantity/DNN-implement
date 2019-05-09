@@ -56,7 +56,7 @@ train_DNN_minibatch(X_train, y_train, 100, optimizer, 128, dnn, X_test, y_test)
 
 
 ## Learning Curve
-
+![](https://raw.githubusercontent.com/massquantity/DNN_implementation/master/pic/mnist_learning_curve.png)
 
 
 ## Lincense
