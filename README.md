@@ -1,10 +1,12 @@
 # Feedforward Neural Network Implementation
 
+<br>
+
 ## Overview:
 
 Feedforward Neural Network implemented in pure python + [numpy](http://www.numpy.org/) . The main features are based on my [Deep Learning Notes ](https://github.com/massquantity/Deep_Learning_NOTES).
 
-
+<br>
 
 ## Features: 
 
@@ -16,7 +18,7 @@ Feedforward Neural Network implemented in pure python + [numpy](http://www.numpy
 - [x] Learning rate decay
 - [x] Early stopping
 
-
+<br>
 
 
 ## Usage
@@ -33,7 +35,7 @@ optimizer = Momentum(lr=1e-3, momentum=0.9, batch_size=128)
 train_DNN_minibatch(X_train, y_train, 100, optimizer, 128, dnn, X_test, y_test)
 ```
 
-
+<br>
 
 ## Benchmarks
 
@@ -53,10 +55,12 @@ train_DNN_minibatch(X_train, y_train, 100, optimizer, 128, dnn, X_test, y_test)
 | + Relu & He Initializer & Adam & Learning Rate Decay & Dropout | 0.0607       | 0.9834           |  \|  | + Relu & He Initializer & Adam & Learning Rate Decay & Dropout |     1.2485     | 0.5933             |
 | + Relu & He Initializer & Adam & Learning Rate Decay & Dropout & Stratified mini-batch training | 0.0591       | 0.9827           |  \|  | + Relu & He Initializer & Adam & Learning Rate Decay & Dropout & Stratified mini-batch training |     1.2444     | 0.5935             |
 
-
+<br>
 
 ## Learning Curve
-![](https://raw.githubusercontent.com/massquantity/DNN_implementation/master/pic/mnist_learning_curve.png)
+<div align="center">
+ <img src="https://raw.githubusercontent.com/massquantity/DNN_implementation/master/pic/mnist_learning_curve.png" height="400px">
+</div>
 
 
 ## Lincense
