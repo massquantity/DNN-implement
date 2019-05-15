@@ -73,6 +73,27 @@ class NesterovMomentum:
             self.velocity['b'][i] = vb
 
 
+class Adagrad:
+    def __init__(self, lr, batch_size):
+        self.lr = lr
+        self.batch_size = batch_size
+        self.h = None
+
+    def update(self, weights, biases, grad_w, grad_b):
+        if self.h is None:
+            self.h = dict()
+            self.h['w'] = [np.zeros(w.shape) for w in weights]
+            self.h['b'] = [np.zeros(b.shape) for b in biases]
+
+        for i, (w, hw, gw) in enumerate(zip(weights, self.h['w'], grad_w)):
+            hw += gw * gw
+            weights[i] -= self.lr * gw / (np.sqrt(hw) + 1e-7)
+
+        for i, (b, hb, gb) in enumerate(zip(biases, self.h['b'], grad_b)):
+            hb += gb * gb
+            biases[i] -= self.lr * gb / (np.sqrt(hb) + 1e-7)
+
+
 class Adam:
     def __init__(self, lr, batch_size, rho1=0.9, rho2=0.999):
         self.lr = lr
